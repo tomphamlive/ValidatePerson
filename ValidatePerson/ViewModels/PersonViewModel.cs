@@ -4,10 +4,11 @@ using ValidatePerson.Models;
 
 namespace ValidatePerson.ViewModels
 {
-    // Performs data validation on its properties before its model is modified.
-    // Also provides error information about the object & its properties that a View can bind to.
+    // Performs data validation on its properties before modifying the model.
+    // Provides error information about the object & its properties that a View can bind to.
     public class PersonViewModel : BindableBase, IDataErrorInfo    
     {
+        // the model
         private readonly Person _person;
 
         #region Ctor
@@ -27,13 +28,12 @@ namespace ValidatePerson.ViewModels
             get => _age;
             set
             {
-                if (SetProperty(ref _age, value))
-                {
-                    if (ValidateAge() != string.Empty)  //not valid
-                        return;
+                if (!SetProperty(ref _age, value))
+                    return;
 
+                // if valid, then modify the model
+                if (ValidateAge() == string.Empty)
                     _person.Age = _age;
-                }
             }
         }
 
@@ -43,13 +43,12 @@ namespace ValidatePerson.ViewModels
             get => _firstName;
             set
             {
-                if (SetProperty(ref _firstName, value))
-                {
-                    if (ValidateFirstName() != string.Empty)  //not valid
-                        return;
+                if (!SetProperty(ref _firstName, value))
+                    return;
 
+                // if valid, then modify the model
+                if (ValidateFirstName() == string.Empty)
                     _person.FirstName = _firstName;
-                }
             } 
         }
 
@@ -83,7 +82,7 @@ namespace ValidatePerson.ViewModels
         private string ValidateAge()
         {
             var error = string.Empty;
-            if (Age <= 0 || Age > 150)
+            if (Age <= 0 || Age > 150)  // validation logic
             {
                 error = "Age must be greater than 0 and less than 150.";
             }                 
@@ -93,7 +92,7 @@ namespace ValidatePerson.ViewModels
         private string ValidateFirstName()
         {
             var error = string.Empty;
-            if (string.IsNullOrWhiteSpace(FirstName))
+            if (string.IsNullOrWhiteSpace(FirstName))   // validation logic
             {
                 error = "First Name cannot be empty.";
             }
