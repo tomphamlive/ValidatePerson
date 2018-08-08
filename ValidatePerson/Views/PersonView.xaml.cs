@@ -13,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace ValidatePerson
+namespace ValidatePerson.Views
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for PersonView.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class PersonView : UserControl
     {
-        public MainWindow()
+        public PersonView()
         {
             InitializeComponent();
         }
