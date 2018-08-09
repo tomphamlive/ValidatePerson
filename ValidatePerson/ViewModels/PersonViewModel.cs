@@ -4,23 +4,27 @@ using ValidatePerson.Models;
 
 namespace ValidatePerson.ViewModels
 {
-    // Performs data validation on its properties before modifying the model.
-    // Provides error information about the object & its properties that a View can bind to.
+    // Encapsulates a Person model, and performs properties validation before modifying the underlying model.
+    // If any property is invalid, error information is available for display by a View.
     public class PersonViewModel : BindableBase, IDataErrorInfo    
     {
         // the model
         private readonly Person _person;
 
-        #region Ctor
+        #region Constructor Takes a Person
 
         public PersonViewModel(Person person)
         {
             _person = person;
+
+            // initialize vm properties
+            Age = person.Age;
+            FirstName = person.FirstName;
         }
 
         #endregion
 
-        #region Bindable Properties
+        #region Bindable Properties for a View
 
         private int _age;
         public int Age
@@ -31,7 +35,6 @@ namespace ValidatePerson.ViewModels
                 if (!SetProperty(ref _age, value))
                     return;
 
-                // if valid, then modify the model
                 if (ValidateAge() == string.Empty)
                     _person.Age = _age;
             }
@@ -46,37 +49,55 @@ namespace ValidatePerson.ViewModels
                 if (!SetProperty(ref _firstName, value))
                     return;
 
-                // if valid, then modify the model
+                // if no Error, then modify the model
                 if (ValidateFirstName() == string.Empty)
                     _person.FirstName = _firstName;
             } 
         }
 
+        // vm is valid if it contains no error
+        public bool IsValid => string.IsNullOrEmpty(Error);
+
         #endregion
 
         #region Implementation of IDataErrorInfo
 
-        // Gets the error message for the property with the given name.
-        // Called by WPF on the property whose Binding's ValidatesOnDataErrors is set to true.
+        // When ValidatesOnDataErrors is set to true on a View's Binding,
+        // WPF calls this method to get any error message on the binded property.
         public string this[string propertyName] => GetValidationError(propertyName);
 
-        // 	Gets an error message indicating what is wrong with this object.
-        public string Error { get; private set; }
+        // Expose an error string to indicate anything wrong with this object.
+        public string Error
+        {
+            get
+            {
+                var ageError = ValidateAge();
+                if (!string.IsNullOrEmpty(ageError))
+                    return ageError;
+
+                var firstNameError = ValidateFirstName();
+                if (!string.IsNullOrEmpty(firstNameError))
+                    return firstNameError;
+
+                return string.Empty;
+            }
+        }
 
         #endregion
 
         #region Properties Validation
 
+        // Validate the specified property, and returns an error string if any.
         private string GetValidationError(string propertyName)
         {
-            Error = string.Empty;
-
-            if (propertyName == nameof(Age))
-                Error = ValidateAge();
-            else if (propertyName == nameof(FirstName))
-                Error = ValidateFirstName();
-
-            return Error;
+            switch (propertyName)
+            {
+                case nameof(Age):
+                    return ValidateAge();
+                case nameof(FirstName):
+                    return ValidateFirstName();
+            }
+            return string.Empty;
         }
 
         private string ValidateAge()
@@ -85,7 +106,7 @@ namespace ValidatePerson.ViewModels
             if (Age <= 0 || Age > 150)  // validation logic
             {
                 error = "Age must be greater than 0 and less than 150.";
-            }                 
+            }
             return error;
         }
 
