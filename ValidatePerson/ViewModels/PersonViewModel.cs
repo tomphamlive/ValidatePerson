@@ -18,8 +18,8 @@ namespace ValidatePerson.ViewModels
             _person = person;
 
             // initialize vm properties
-            Age = person.Age;
-            FirstName = person.FirstName;
+            Age = 285;
+            FirstName = "Joe";
         }
 
         #endregion

@@ -11,12 +11,9 @@ namespace ValidatePerson.ViewModels
         public MainViewModel()
         {
             // MainViewModel creates a PersonViewModel with a Person
-            PersonViewModel = new PersonViewModel(new Person {Age = 19, FirstName = "John"});
-            PersonViewModel.PropertyChanged += OnChangedPersonViewModel;
+            PersonViewModel = new PersonViewModel(new Person());
 
-            IsValid = PersonViewModel.IsValid;
-
-            ExitCommand = new DelegateCommand(Exit, CanExit);
+            ExitCommand = new DelegateCommand(Exit);
         }
 
         #region Bindable Properties
@@ -26,31 +23,19 @@ namespace ValidatePerson.ViewModels
 
         public ICommand ExitCommand { get; }
 
-        private bool _isValid;
-        public bool IsValid
-        {
-            get => _isValid;
-            set => SetProperty(ref _isValid, value);
-        }
-
         #endregion
 
         #region Private Methods
 
-        // Whenever PersonViewModel changes, see if it is valid
-        private void OnChangedPersonViewModel(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            IsValid = PersonViewModel.IsValid;
-        }
-
         private bool CanExit()
         {
-            return IsValid;
+            return PersonViewModel.IsValid;
         }
 
         private void Exit()
         {
-            Application.Current.Shutdown();
+            if (CanExit())
+                Application.Current.Shutdown();
         }
 
         #endregion

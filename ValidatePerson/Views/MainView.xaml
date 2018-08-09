@@ -21,7 +21,6 @@
         <views:PersonView Grid.Row="1" Margin="5" DataContext="{Binding PersonViewModel}" />
 
         <Button Grid.Row="2" Width="100" Height="50" Content="Exit" 
-                IsEnabled="{Binding IsValid}"
                 Command="{Binding ExitCommand}" />
 
     </Grid>
