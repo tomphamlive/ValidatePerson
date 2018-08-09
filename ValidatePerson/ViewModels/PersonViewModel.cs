@@ -35,6 +35,7 @@ namespace ValidatePerson.ViewModels
                 if (!SetProperty(ref _age, value))
                     return;
 
+                // if no Error, then modify the model
                 if (ValidateAge() == string.Empty)
                     _person.Age = _age;
             }
