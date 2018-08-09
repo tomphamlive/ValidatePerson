@@ -4,8 +4,12 @@ using ValidatePerson.Models;
 
 namespace ValidatePerson.ViewModels
 {
-    // Encapsulates a Person model, and performs properties validation before modifying the underlying model.
-    // If any property is invalid, error information is available for display by a View.
+    // PersonViewModel represents the display of a Person model.
+    // It implements IDataErrorInfo, which means validation is performed on properties
+    // of the view model. Any validation error is displayed in the View.  
+    //
+    // The model is updated only with valid values from the view model, which guarantees the model
+    // will not contain invalid data.
     public class PersonViewModel : BindableBase, IDataErrorInfo    
     {
         // the model
@@ -16,18 +20,14 @@ namespace ValidatePerson.ViewModels
         public PersonViewModel(Person person)
         {
             _person = person;
-
-            // initialize vm properties
-            Age = 285;
-            FirstName = "Joe";
         }
 
         #endregion
 
         #region Bindable Properties for a View
 
-        private int _age;
-        public int Age
+        private string _age;
+        public string Age
         {
             get => _age;
             set
@@ -37,7 +37,7 @@ namespace ValidatePerson.ViewModels
 
                 // if no Error, then modify the model
                 if (ValidateAge() == string.Empty)
-                    _person.Age = _age;
+                    _person.Age = int.Parse(_age);
             }
         }
 
@@ -104,10 +104,12 @@ namespace ValidatePerson.ViewModels
         private string ValidateAge()
         {
             var error = string.Empty;
-            if (Age <= 0 || Age > 150)  // validation logic
-            {
+            if (string.IsNullOrWhiteSpace(Age))
+                error = "Must enter value for age.";
+            else if (!int.TryParse(Age, out var age))
+                error = "Must enter an integer value for age.";
+            else if (age <= 0 || age > 150)
                 error = "Age must be greater than 0 and less than 150.";
-            }
             return error;
         }
 

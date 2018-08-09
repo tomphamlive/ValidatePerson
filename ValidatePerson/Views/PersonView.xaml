@@ -9,8 +9,10 @@
 
     <UserControl.Resources>
         <!-- When ValidatesOnDataErrors is set to True, if the Binded source property is invalid,
-             the Validation.HasError attached property becomes true, and this Style sets the TextBox's
-             tooltip to the error string using a Trigger. -->
+             the Validation.HasError attached property becomes true.
+             
+             This Style uses a Trigger to trigger on the Validation.HasError attached property
+             to set the TextBox's tooltip to the error string. -->
         <Style x:Key="TextBoxError" TargetType="TextBox">
             <Style.Triggers>
                 <Trigger Property="Validation.HasError" Value="True">
